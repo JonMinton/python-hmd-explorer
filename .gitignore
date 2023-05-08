@@ -1,2 +1,2 @@
-env-vars/*
+.env
 assets/data/*

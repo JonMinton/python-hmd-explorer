@@ -5,6 +5,8 @@ from dash.dependencies import Input, Output
 from src.static.content_intro import contentIntro
 from src.static.content_about import contentAbout
 
+from src.dynamic.twod_ex import section2dEx
+
 
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -63,9 +65,7 @@ def render_outer_content(tab):
               Input('tabs-inner-2d', 'value'))
 def render_inner_2d_content(tab):
     if tab == 'tab-ex':
-        return html.Div(
-            html.H4('tab-inner-2d-ex')
-        )
+        return section2dEx()
     elif tab == 'tab-pop-N':
         return html.Div(
             html.H4('tab-inner-2d-pop-N')
