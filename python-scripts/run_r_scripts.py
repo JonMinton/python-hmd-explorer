@@ -1,3 +1,4 @@
+import subprocess
 # OS for environment variables (to avoid saving on github)
 import os
 # pandas for python data science
@@ -21,3 +22,6 @@ hmd_pass = os.environ.get('HMD_PASSWORD')
 # If it does not run r-scripts/download_hmd_save_as_csv.R 
 # from here passing hmd_user and hmd_pass 
 # as arguments in subprocess.call
+
+
+subprocess.call(f"Rscript /Users/JonMinton/repos/python-hmd-explorer/r-scripts/download_hmd_save_as_csv.R {hmd_user} {hmd_pass}", shell = True)
