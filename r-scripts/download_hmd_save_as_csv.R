@@ -3,6 +3,14 @@
 # install.packages('jsonlite')
 # install.packages('glue')
 
+# NOTE: To use from python consider adding the following to receive arguments 
+# for usernames and passwords
+
+# args <- commandArgs(trailingOnly = TRUE)
+
+# username <- args[1]
+# password <- args[2]
+
 library(tidyverse)
 library(HMDHFDplus)
 library(jsonlite)
