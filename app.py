@@ -2,6 +2,9 @@ from dash import Dash, dcc, html
 
 from dash.dependencies import Input, Output
 
+# import pickle
+
+
 from src.static.content_intro import contentIntro
 from src.static.content_about import contentAbout
 
@@ -16,6 +19,7 @@ app = Dash(__name__, external_stylesheets=external_stylesheets, suppress_callbac
 app.layout = html.Div([
     html.H1('Human Mortality Database Data Visualiser'),
     html.H2('A Python Dash app by Jon Minton'),
+    html.H2('There are ... sexes'),
     dcc.Tabs(id="tabs-outer", value='tabs-outer-value', children=[
         dcc.Tab(label="Introduction", value='tab-outer-introduction'),
         dcc.Tab(label="2D Visualisations", value='tab-outer-2d'),
@@ -95,6 +99,12 @@ def render_inner_3d_content(tab):
         return html.Div(
             html.H4('tab-inner-3d-m_over_f')
         )
+    
+
+# def get_lookup_sexes():
+#     with open('assets/lookups/sexes.pkl', 'rb') as f:
+#         lookupsSex = pickle.load(f)
+#     return(lookupsSex)        
 
 if __name__ == '__main__':
     app.run_server(debug=True)
