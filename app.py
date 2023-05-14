@@ -2,7 +2,7 @@ from dash import Dash, dcc, html
 
 from dash.dependencies import Input, Output
 
-# import pickle
+import pickle
 
 
 from src.static.content_intro import contentIntro
@@ -19,7 +19,7 @@ app = Dash(__name__, external_stylesheets=external_stylesheets, suppress_callbac
 app.layout = html.Div([
     html.H1('Human Mortality Database Data Visualiser'),
     html.H2('A Python Dash app by Jon Minton'),
-    html.H2('There are ... sexes'),
+    html.H2(id = 'report-number-of-sexes'),
     dcc.Tabs(id="tabs-outer", value='tabs-outer-value', children=[
         dcc.Tab(label="Introduction", value='tab-outer-introduction'),
         dcc.Tab(label="2D Visualisations", value='tab-outer-2d'),
@@ -100,11 +100,13 @@ def render_inner_3d_content(tab):
             html.H4('tab-inner-3d-m_over_f')
         )
     
-
-# def get_lookup_sexes():
-#     with open('assets/lookups/sexes.pkl', 'rb') as f:
-#         lookupsSex = pickle.load(f)
-#     return(lookupsSex)        
+@app.callback(
+        Output('report-number-of-sexes', 'children'),
+        [Input('report-number-of-sexes', 'id')])
+def update_headers_with_number_of_sexes(id):
+    with open('assets/lookups/sexes.pkl', 'rb') as f:
+        lookupsSex = pickle.load(f)
+    return(f'There are {len(lookupsSex)} sexes')        
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, host = '127.0.0.1')
