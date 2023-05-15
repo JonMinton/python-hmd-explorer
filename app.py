@@ -20,6 +20,7 @@ app.layout = html.Div([
     html.H1('Human Mortality Database Data Visualiser'),
     html.H2('A Python Dash app by Jon Minton'),
     html.H2(id = 'report-number-of-sexes'),
+    html.H2(id = 'report-number-of-countries'),
     dcc.Tabs(id="tabs-outer", value='tabs-outer-value', children=[
         dcc.Tab(label="Introduction", value='tab-outer-introduction'),
         dcc.Tab(label="2D Visualisations", value='tab-outer-2d'),
@@ -106,7 +107,17 @@ def render_inner_3d_content(tab):
 def update_headers_with_number_of_sexes(id):
     with open('assets/lookups/sexes.pkl', 'rb') as f:
         lookupsSex = pickle.load(f)
-    return(f'There are {len(lookupsSex)} sexes')        
+    return(f'There are {len(lookupsSex)} sexes')     
+
+@app.callback(
+        Output('report-number-of-countries', 'children'),
+        [Input('report-number-of-countries', 'id')])
+def update_headers_with_number_of_countries(id):
+    with open('assets/lookups/countries.pkl', 'rb') as f:
+        lookupsCountries = pickle.load(f)
+    return(f'There are {len(lookupsCountries)} countries')     
+
+   
 
 if __name__ == '__main__':
     app.run_server(debug=True, host = '127.0.0.1')
