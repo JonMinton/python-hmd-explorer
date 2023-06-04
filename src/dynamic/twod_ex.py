@@ -23,17 +23,18 @@ def section2dEx():
     return html.Div([
         html.H4('tab-inner-2d-ex IN MODULE'),
         dcc.Dropdown(
-            lookupsSex, 
-            lookupsSex[[1]], 
+            options = lookupsSex, 
+            value = lookupsSex[1], 
             id='sexSelectInput'
         ),
         dcc.Dropdown(
-            lookupsCountriesLv, 
-            lookupsCountriesLv[1]['label'], 
+            options=lookupsCountriesLv, 
+            value = lookupsCountriesLv[1], 
             id='countriesSelectInput'
         ),
         html.Div(id='bothSelectOutput'),
-        dash_table.DataTable(data=df.head().to_dict('records'), page_size=10)
+        html.Div(f'The df has {df.shape[0]} rows and {df.shape[1]} columns'),
+        html.Div(id='bothSelectFilteredDf')
     ])
 
 
@@ -49,3 +50,17 @@ def section2dEx():
 )
 def update_output(sexSelectInput_value, countriesSelectInput_value):
     return f'You have selected sex {sexSelectInput_value} and country {countriesSelectInput_value}'
+
+@callback(
+    Output('bothSelectFilteredDf', 'children'),
+    [
+        Input('sexSelectInput', 'value'),
+        Input('countriesSelectInput', 'value')
+    ]
+)
+def filter_df(sexSelectInput_value, countriesSelectInput_value):
+    df_filtered = df[
+        (df['sex'] == sexSelectInput_value) &
+        (df['country'] == countriesSelectInput_value)
+    ]
+    return f'The filtered df has {df_filtered.shape[0]} rows and {df_filtered.shape[1]} columns'

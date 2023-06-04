@@ -1,0 +1,1 @@
+This folder should contain small code snippets to test my understanding of how very small and specific dash, pandas and plotly functionality works.

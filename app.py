@@ -4,13 +4,17 @@ from dash.dependencies import Input, Output
 
 import pickle
 
-
 from src.static.content_intro import contentIntro
 from src.static.content_about import contentAbout
 
 from src.dynamic.twod_ex import section2dEx
 
 
+from src.learning.labelled_dropdown_value import labelledDropdownValue
+from src.learning.show_simple_plotly_plot import showSimplePlotlyPlot
+from src.learning.update_simple_plot_based_on_selection import updateSimplePlotBasedOnSelection
+from src.learning.show_simple_3d_plot import showSimple3dPlot
+from src.learning.show_clicked_point import showClickedPoint
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -19,12 +23,11 @@ app = Dash(__name__, external_stylesheets=external_stylesheets, suppress_callbac
 app.layout = html.Div([
     html.H1('Human Mortality Database Data Visualiser'),
     html.H2('A Python Dash app by Jon Minton'),
-    html.H2(id = 'report-number-of-sexes'),
-    html.H2(id = 'report-number-of-countries'),
     dcc.Tabs(id="tabs-outer", value='tabs-outer-value', children=[
         dcc.Tab(label="Introduction", value='tab-outer-introduction'),
         dcc.Tab(label="2D Visualisations", value='tab-outer-2d'),
         dcc.Tab(label="3D Visualisations", value='tab-outer-3d'),
+        dcc.Tab(label='Feature tests', value = 'tab-feature-tests'),
         dcc.Tab(label="About", value='tab-outer-about')
     ]),
     html.Div(id='tabs-outer-content')
@@ -47,8 +50,7 @@ def render_outer_content(tab):
                 ]         
             ),
             html.Div(id='tabs-inner-2d-content')
-        ]
-        )
+        ])
     elif tab == 'tab-outer-3d':
         return html.Div([
             html.H3('tab-outer-3d'),
@@ -62,6 +64,21 @@ def render_outer_content(tab):
             html.Div(id='tabs-inner-3d-content')
         ]
         )
+    elif tab == 'tab-feature-tests':
+        return html.Div([
+            html.H3('Feature tests'),
+            dcc.Tabs(id='tabs-inner-featuretests', value = 'tabs-inner-featuretests-value',
+                children = [
+                    dcc.Tab(label = 'Labelled Dropdown value', value = 'tab-test-labelledDropdownValue'),
+                    dcc.Tab(label = 'Simple Plotly plot', value = 'tab-test-showSimplePlotlyPlot'),
+                    dcc.Tab(label = 'Update Simple plot based on user selection', value = 'tab-test-updateSimplePlotBasedOnSelection'),
+                    dcc.Tab(label = "Simple 3d plotly plot", value = 'tab-test-showSimple3dPlot'),
+                    dcc.Tab(label = "Show clicked point", value = 'tab-test-showClickedPoint')
+                ]     
+            ),
+            html.Div(id='tabs-inner-featuretests-content')
+
+        ])
     elif tab == 'tab-outer-about':
         return contentAbout()
     
@@ -83,6 +100,20 @@ def render_inner_2d_content(tab):
         return html.Div(
             html.H4('tab-inner-2d-mx-over-t')
         )
+    
+@app.callback(Output('tabs-inner-featuretests-content', 'children'),
+              Input('tabs-inner-featuretests', 'value'))
+def render_featuretests_content(tab):
+    if tab == 'tab-test-labelledDropdownValue':
+        return labelledDropdownValue()
+    elif tab == 'tab-test-showSimplePlotlyPlot':
+        return showSimplePlotlyPlot()
+    elif tab == 'tab-test-updateSimplePlotBasedOnSelection':
+        return updateSimplePlotBasedOnSelection()
+    elif tab == 'tab-test-showSimple3dPlot':
+        return showSimple3dPlot()
+    elif tab == 'tab-test-showClickedPoint':
+        return showClickedPoint()
 
 
 @app.callback(Output('tabs-inner-3d-content', 'children'),
@@ -100,22 +131,7 @@ def render_inner_3d_content(tab):
         return html.Div(
             html.H4('tab-inner-3d-m_over_f')
         )
-    
-@app.callback(
-        Output('report-number-of-sexes', 'children'),
-        [Input('report-number-of-sexes', 'id')])
-def update_headers_with_number_of_sexes(id):
-    with open('assets/lookups/sexes.pkl', 'rb') as f:
-        lookupsSex = pickle.load(f)
-    return(f'There are {len(lookupsSex)} sexes')     
-
-@app.callback(
-        Output('report-number-of-countries', 'children'),
-        [Input('report-number-of-countries', 'id')])
-def update_headers_with_number_of_countries(id):
-    with open('assets/lookups/countries.pkl', 'rb') as f:
-        lookupsCountries = pickle.load(f)
-    return(f'There are {len(lookupsCountries)} countries')     
+      
 
    
 
