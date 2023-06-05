@@ -16,6 +16,7 @@ load_dotenv()
 hmd_user = os.environ.get('HMD_USERNAME')
 hmd_pass = os.environ.get('HMD_PASSWORD')
 
+
 # Next steps
 
 # Check data file exists (about 380mb)

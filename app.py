@@ -15,6 +15,7 @@ from src.learning.show_simple_plotly_plot import showSimplePlotlyPlot
 from src.learning.update_simple_plot_based_on_selection import updateSimplePlotBasedOnSelection
 from src.learning.show_simple_3d_plot import showSimple3dPlot
 from src.learning.show_clicked_point import showClickedPoint
+from src.learning.show_lexis_surface_plot import showLexisSurfacePlot
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -73,7 +74,8 @@ def render_outer_content(tab):
                     dcc.Tab(label = 'Simple Plotly plot', value = 'tab-test-showSimplePlotlyPlot'),
                     dcc.Tab(label = 'Update Simple plot based on user selection', value = 'tab-test-updateSimplePlotBasedOnSelection'),
                     dcc.Tab(label = "Simple 3d plotly plot", value = 'tab-test-showSimple3dPlot'),
-                    dcc.Tab(label = "Show clicked point", value = 'tab-test-showClickedPoint')
+                    dcc.Tab(label = "Show clicked point", value = 'tab-test-showClickedPoint'),
+                    dcc.Tab(label = "Show Lexis surface plot", value = 'tab-test-showLexisSurfacePlot')
                 ]     
             ),
             html.Div(id='tabs-inner-featuretests-content')
@@ -114,6 +116,8 @@ def render_featuretests_content(tab):
         return showSimple3dPlot()
     elif tab == 'tab-test-showClickedPoint':
         return showClickedPoint()
+    elif tab == 'tab-test-showLexisSurfacePlot':
+        return showLexisSurfacePlot()
 
 
 @app.callback(Output('tabs-inner-3d-content', 'children'),
