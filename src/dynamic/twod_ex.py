@@ -14,8 +14,8 @@ with open('assets/lookups/countries.pkl', 'rb') as f:
 # This is the format expected to be able to display a label but return the value
 lookupsCountriesLv = [{'label': key, 'value': value} for key, value in lookupsCountries.items()]    
 
-print(lookupsCountriesLv)
-print(lookupsCountriesLv[1]['value'])
+# print(lookupsCountriesLv)
+# print(lookupsCountriesLv[1]['value'])
 
 df = pd.read_csv('assets/data/lifetables.csv')
    
