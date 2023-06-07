@@ -24,7 +24,7 @@ from src.learning.show_can_select_lexis_surface_by_country_and_sex import showLe
 
 # Feature tests 11-15
 from src.learning.show_lexis_surface_plot_with_subplots import showLexisSurfaceplotWithSubplots
-# from src.learning.show_tooltips_on_simple_plot import showTooltipsOnSimplePlot
+from src.learning.show_custom_tooltips_on_simple_plot import showCustomTooltipsOnSimplePlot
 # from src.learning.show_tooltips_on_3d_plot import showTooltipsOn3dPlot
 # from src.learning.show_tooltips_on_options import showTooltipsOnOptions
 
@@ -122,7 +122,8 @@ def render_outer_content(tab):
             dcc.Tabs(id='tabs-inner-featuretests_1115', value = 'tabs-inner-featuretests_1115-value',
                 children = [
                     # Feature tests 11-15
-                    dcc.Tab(label = "Show Lexis surface with subplots", value = 'tab-test-showLexisSurfaceWithSubplots')
+                    dcc.Tab(label = "Show Lexis surface with subplots", value = 'tab-test-showLexisSurfaceWithSubplots'),
+                    dcc.Tab(label = "Show custom tooltips on simple plot", value = 'tab-test-showCustomTooltipsOnSimplePlot')
                 ]         
             ),
             html.Div(id='tabs-inner-featuretests_1115-content')
@@ -188,6 +189,8 @@ def render_featuretests_1115_content(tab):
     # # Feature tests 11-15
     if tab == 'tab-test-showLexisSurfaceWithSubplots':
         return showLexisSurfaceplotWithSubplots()
+    elif tab == 'tab-test-showCustomTooltipsOnSimplePlot':
+        return showCustomTooltipsOnSimplePlot()
     else: 
         return None
 
