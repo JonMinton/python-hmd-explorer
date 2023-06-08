@@ -1,11 +1,13 @@
 import json 
 
 def generateTypeLookups():
+    
     typeKv = [
         {"label" : "Births", "value" : "births"},
         {"label" : "Deaths", "value" : "deaths"},
         {"label" : "Exposures", "value" : "exposures"},
         {"label" : "Mortality Rates", "value" : "Mx"},
+        {"label" : "Lifetables", "value" : "lifetables"},
         {"label" : "Population Sizes", "value" : "population"}
     ]
 
