@@ -1,4 +1,3 @@
-import json
 from dash import Dash, html, dcc, callback
 import plotly.express as px
 from dash.dependencies import Input, Output

@@ -5,7 +5,8 @@ import dash_bootstrap_components as dbc
 
 from src.static.content_intro import contentIntro
 from src.static.content_about import contentAbout
-from src.dynamic.twod_ex import section2dEx
+from src.static.layout_2d_visualisation import layout2dVisualisation
+
 
 
 # Feature tests 1-5
@@ -25,8 +26,8 @@ from src.learning.show_can_select_lexis_surface_by_country_and_sex import showLe
 # Feature tests 11-15
 from src.learning.show_lexis_surface_plot_with_subplots import showLexisSurfaceplotWithSubplots
 from src.learning.show_custom_tooltips_on_simple_plot import showCustomTooltipsOnSimplePlot
-# from src.learning.show_tooltips_on_3d_plot import showTooltipsOn3dPlot
-# from src.learning.show_tooltips_on_options import showTooltipsOnOptions
+from src.learning.show_custom_tooltips_on_lexis_surface import showCustomTooltipsOnLexisSurface
+from src.learning.show_can_use_dbc import showCanUseDbc
 
 # Feature tests 16-20
 
@@ -40,29 +41,75 @@ from src.learning.show_custom_tooltips_on_simple_plot import showCustomTooltipsO
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 
-app.layout = dbc.Container([
-    html.H1('Human Mortality Database Data Visualiser'),
-    html.H2('A Python Dash app by Jon Minton'),
-    dcc.Tabs(id="tabs-outer", value='tabs-outer-value', children=[
-        # dcc.Tab(label="Introduction", value='tab-outer-introduction'),
-        # dcc.Tab(label="2D Visualisations", value='tab-outer-2d'),
-        # dcc.Tab(label="3D Visualisations", value='tab-outer-3d'),
-        dcc.Tab(label='Feature tests 1-5',   value = 'tab-feature-tests_0105'),
-        dcc.Tab(label='Feature tests 6-10',  value = 'tab-feature-tests_0610'),
-        dcc.Tab(label='Feature tests 11-15', value = 'tab-feature-tests_1115'),
-        dcc.Tab(label='Feature tests 16-20',  value = 'tab-feature-tests_1620'),
 
-        # dcc.Tab(label="About", value='tab-outer-about')
-    ]),
-    html.Div(id='tabs-outer-content')
-])
+
+
+app.layout = dbc.Container([
+    dbc.Row(
+        [
+            dbc.Col(
+                dbc.Card(
+                    [],
+                    style = {"background-color" :"black"},
+                    className = 'h-100'
+                ),
+                width = 2
+            ),
+            dbc.Col(
+                dbc.Card([
+                    html.H1('Human Mortality Database Data Visualiser'),
+                ]),
+                width = 8
+            ),
+            dbc.Col(
+                dbc.Card(
+                    [],
+                    style = {"background-color": "gray"},
+                    className = 'h-100'
+                ),
+                width = 2
+            )
+        ],
+       style = {"margin-bottom": "0.5rem"}
+    ),
+    dcc.Tabs(
+        id="tabs-outer", value='tabs-outer-value', 
+        children=[
+            dcc.Tab(label="Introduction", value='tab-outer-introduction', className = "nav-item mt-1"),
+            dcc.Tab(label="2D Visualisations", value='tab-outer-2d', className = "nav-item mt-1"),
+            dcc.Tab(label="3D Visualisations", value='tab-outer-3d', className = "nav-item mt-1"),
+        # dcc.Tab(label='Feature tests 1-5',   value = 'tab-feature-tests_0105'),
+        # dcc.Tab(label='Feature tests 6-10',  value = 'tab-feature-tests_0610'),
+        # dcc.Tab(label='Feature tests 11-15', value = 'tab-feature-tests_1115'),
+        # dcc.Tab(label='Feature tests 16-20',  value = 'tab-feature-tests_1620'),
+
+            dcc.Tab(label="About", value='tab-outer-about', className = "nav-item mt-1")
+        ],
+        className = "nav nav-tabs mb-3"
+    ),
+    html.Div(
+        id='tabs-outer-content',
+        style = {
+            "height" : "100%"
+        },
+        className = "mb-3"
+    )
+    ],
+    fluid=False, # True removes margins from either side of the container
+    style = {
+        "height": "100vh",
+        "display" : "flex",
+        "flex-direction" : "column"
+    }
+    )
 
 @app.callback(Output('tabs-outer-content', 'children'),
               Input('tabs-outer', 'value'))
 def render_outer_content(tab):
     if tab == 'tab-outer-introduction':
         return contentIntro()
-    # elif tab == 'tab-outer-2d':
+    elif tab == 'tab-outer-2d':
+        return layout2dVisualisation()
     #     return html.Div([
     #         dcc.Tabs(id='tabs-inner-2d', value='tabs-inner-2d-value', 
     #             children = [
@@ -99,7 +146,6 @@ def render_outer_content(tab):
                 ]     
             ),
             html.Div(id='tabs-inner-featuretests_0105-content')
-
         ])
     elif tab == 'tab-feature-tests_0610':
         return html.Div([
@@ -117,13 +163,15 @@ def render_outer_content(tab):
             ),
             html.Div(id='tabs-inner-featuretests_0610-content')
         ])
-    elif tab == 'tab-feature-tests-1115':
+    elif tab == 'tab-feature-tests_1115':
         return html.Div([
             dcc.Tabs(id='tabs-inner-featuretests_1115', value = 'tabs-inner-featuretests_1115-value',
                 children = [
                     # Feature tests 11-15
                     dcc.Tab(label = "Show Lexis surface with subplots", value = 'tab-test-showLexisSurfaceWithSubplots'),
-                    dcc.Tab(label = "Show custom tooltips on simple plot", value = 'tab-test-showCustomTooltipsOnSimplePlot')
+                    dcc.Tab(label = "Show custom tooltips on simple plot", value = 'tab-test-showCustomTooltipsOnSimplePlot'),
+                    dcc.Tab(label = "Show custom tooltips on Lexis surface", value = "tab-test-showCustomTooltipsOnLexisSurface"),
+                    dcc.Tab(label = "Show bootstrap components 1", value = "tab-test-showBoostrapComponents1")
                 ]         
             ),
             html.Div(id='tabs-inner-featuretests_1115-content')
@@ -191,6 +239,11 @@ def render_featuretests_1115_content(tab):
         return showLexisSurfaceplotWithSubplots()
     elif tab == 'tab-test-showCustomTooltipsOnSimplePlot':
         return showCustomTooltipsOnSimplePlot()
+    elif tab == "tab-test-showCustomTooltipsOnLexisSurface":
+        return showCustomTooltipsOnLexisSurface()
+    elif tab == "tab-test-showBoostrapComponents1":
+        print("called!")
+        return showCanUseDbc()
     else: 
         return None
 
