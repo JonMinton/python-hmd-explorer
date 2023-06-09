@@ -3,9 +3,12 @@ from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
+from src.style_wrappers.navitem_wrapper import makeNavItem
+
 from src.static.content_intro import contentIntro
 from src.static.content_about import contentAbout
-from src.static.layout_2d_visualisation import layout2dVisualisation
+from src.layouts.layout_2d_visualisation import layout2dVisualisation
+from src.layouts.layout_3d_visualisation import layout3dVisualisation
 
 
 
@@ -39,7 +42,7 @@ from src.learning.show_can_use_dbc import showCanUseDbc
 
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP], suppress_callback_exceptions=True)
 
 
 
@@ -48,29 +51,44 @@ app.layout = dbc.Container([
     dbc.Row(
         [
             dbc.Col(
-                dbc.Card(
-                    [],
-                    style = {"background-color" :"black"},
-                    className = 'h-100'
+                dbc.Nav(
+                    dbc.Navbar(
+                        [
+                            makeNavItem("bi bi-database", "Data", "https://www.mortality.org/Data/DataAvailability"),
+                            makeNavItem("bi bi-app", "HMD", "https://www.mortality.org/Home/Index"),
+                            makeNavItem("bi bi-journal-album", "Methods", "https://www.mortality.org/File/GetDocument/Public/Docs/MethodsProtocolV6.pdf"),
+                            makeNavItem("bi bi-journal-code", "API", "https://cran.r-project.org/web/packages/HMDHFDplus/index.html")
+
+                        ]
+                    )
                 ),
-                width = 2
+                width = 3
             ),
             dbc.Col(
-                dbc.Card([
-                    html.H1('Human Mortality Database Data Visualiser'),
-                ]),
-                width = 8
+                    html.H1(
+                        'Demographic Data Visualiser',
+                        style = {"text-align" : "center"}
+                    ),
+                width = 6
             ),
             dbc.Col(
-                dbc.Card(
-                    [],
-                    style = {"background-color": "gray"},
-                    className = 'h-100'
+                dbc.Nav(
+                    dbc.Navbar(
+                        children = [
+                            makeNavItem("bi bi-github", "Repo", "https://github.com/jonminton/python-hmd-explorer"),
+                            makeNavItem("bi bi-linkedin", "LinkedIn", "https://www.linkedin.com/in/jon-minton-09480b13a/?originalSubdomain=uk"),
+                            makeNavItem("bi bi-github", "Repos", "https://github.com/JonMinton"), 
+                            makeNavItem("bi bi-twitter", "Twitter", "https://twitter.com/jonminton")
+
+                        ]
+                    )
                 ),
-                width = 2
+
+                width = 3
             )
         ],
-       style = {"margin-bottom": "0.5rem"}
+       style = {"margin-bottom": "0.5rem"},
+       className = ("g-0")
     ),
     dcc.Tabs(
         id="tabs-outer", value='tabs-outer-value', 
@@ -110,6 +128,8 @@ def render_outer_content(tab):
         return contentIntro()
     elif tab == 'tab-outer-2d':
         return layout2dVisualisation()
+    elif tab == 'tab-outer-3d':
+        return layout3dVisualisation()
     #     return html.Div([
     #         dcc.Tabs(id='tabs-inner-2d', value='tabs-inner-2d-value', 
     #             children = [
