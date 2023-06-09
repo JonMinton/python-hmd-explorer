@@ -75,7 +75,28 @@ def layout2dVisualisation():
                             target = "2d-confirm-selection"
                         )
                         ],
-                        width = 3
+                        width = 2
+                    ),
+                    dbc.Col(
+                        [
+                            dbc.Button("More", color = "secondary", className = "me1",
+                                       id = "2d-open-more", n_clicks = 0
+                        ),
+                        dbc.Tooltip(
+                            "Click here to open additional options",
+                            target = "2d-open-more-options"
+                        ),
+                        dbc.Offcanvas(
+                            children = [
+                                dbc.Placeholder(),
+                                html.P("contents will go here ")
+                            ],
+                            title = "Further options",
+                            id = "2d-more-options",
+                            is_open=False,
+                            placement = "end"
+                        )
+                        ]
                     )
                     
                 ],
@@ -90,14 +111,6 @@ def layout2dVisualisation():
                             'width': '100vh', 'height': '80vh'
                         }
                     ),
-                #     html.P("", 
-                #         id = "2d-vis-selection-output",
-                #         style = {
-                #             "background-color" : "cyan",
-                #             "height" : "100%"
-                #             }               
-                #         )
-                # ),
                     style = {
                         "flex-grow" : "1"
                     }
@@ -182,5 +195,13 @@ def showSelection(n_clicks, type_value, place_value, sex_value):
 def updatePlaceSelector(newPlace):
     return placesTypes[newPlace],placesTypes[newPlace][0]['value']
 
-
+@callback(
+    Output("2d-more-options", "is_open"),
+    Input("2d-open-more", "n_clicks"),
+    State("2d-more-options", "is_open")
+)
+def toggleMoreOptionsOffside(n1, is_open):
+    if n1:
+        return not is_open
+    return is_open
 
