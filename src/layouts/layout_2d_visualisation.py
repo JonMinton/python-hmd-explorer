@@ -5,6 +5,12 @@ import plotly.express as px
 
 import json
 
+from src.dynamic.canvas_2d_births import canvas2dBirths
+from src.dynamic.canvas_2d_deaths import canvas2dDeaths
+from src.dynamic.canvas_2d_exposures import canvas2dExposures
+from src.dynamic.canvas_2d_population import canvas2dPopulation
+from src.dynamic.canvas_2d_lifetables import canvas2dLifetables
+
 with open('assets/lookups/types_of_data.json', 'r') as f:
     dataTypes = json.load(f)
 
@@ -133,55 +139,19 @@ def layout2dVisualisation():
 )
 def showSelection(n_clicks, type_value, place_value, sex_value):
     if (type_value == "births"):
-        dta = pd.read_csv("assets/data/births.csv")
-        d2 = dta.loc[
-            (dta['cntry'] == place_value) & 
-            (dta['sex'] == sex_value), :
-        ]
-        fig = px.line(d2, x="year", y="number_of_births")
-        return fig
+        return canvas2dBirths(place_value, sex_value)
+
     elif (type_value == "deaths"):
-        dta = pd.read_csv("assets/data/deaths.csv")
-        d2 = dta.loc[
-            (dta['cntry'] == place_value) & 
-            (dta['sex'] == sex_value)
-        ]
-        # The code below returns the total number of deaths by year
-        d3 = d2.groupby(['year']).agg({"number_of_deaths" : "sum"}).reset_index()
-        
-        fig = px.line(d3, x = "year", y = "number_of_deaths")
-        return fig
+        return canvas2dDeaths(place_value, sex_value)
+
     elif (type_value == 'exposures'):
-        dta = pd.read_csv("assets/data/exposures.csv")
-        d2  = dta.loc[
-            (dta['cntry'] == place_value) & 
-            (dta['sex'] == sex_value), :
-        ]
-        d3 = d2.groupby(['year']).agg({"exposures_count" : "sum"}).reset_index()
+        return canvas2dExposures(place_value, sex_value)
 
-        fig = px.line(d3, x = "year", y = "exposures_count")
-        return fig
     elif (type_value == 'population'):
-        dta = pd.read_csv("assets/data/population.csv")
-        d2 = dta.loc[
-            (dta['cntry'] == place_value) & 
-            (dta['sex'] == sex_value), :
-        ]
-        d3 = d2.groupby(['year']).agg({"population_count" : "sum"}).reset_index()
-
-        fig = px.line(d3, x = 'year', y = 'population_count')
-        return fig
+        return canvas2dPopulation(place_value, sex_value)
     elif (type_value == 'lifetables'):
-        dta = pd.read_csv("assets/data/lifetables.csv")
-        adj_sex_value = "both" if sex_value == "total" else sex_value
-        d2 = dta.loc[
-            (dta['cntry'] == place_value) & 
-            (dta['sex'] == adj_sex_value) & 
-            (dta['age'] == 0), :
-        ]
+        return canvas2dLifetables(place_value, sex_value)
 
-        fig = px.line(d2, x= 'year', y = 'ex')
-        return fig
     else: 
         return None
         
