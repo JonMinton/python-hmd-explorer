@@ -1,3 +1,4 @@
+import dash
 from dash import Dash, dcc, html
 
 from dash.dependencies import Input, Output
@@ -5,16 +6,16 @@ import dash_bootstrap_components as dbc
 
 from src.style_wrappers.navitem_wrapper import makeNavItem
 
-from src.static.content_intro import contentIntro
-from src.static.content_about import contentAbout
-from src.layouts.layout_2d_visualisation import layout2dVisualisation
-from src.layouts.layout_3d_visualisation import layout3dVisualisation
 
 
 
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP], suppress_callback_exceptions=True)
+app = Dash(__name__, 
+           external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.BOOTSTRAP], 
+           suppress_callback_exceptions=True ,
+           use_pages=True
+           )
 
 
 
@@ -69,20 +70,14 @@ app.layout = dbc.Container([
         children=[
             dcc.Tab(label="Introduction", value='tab-outer-introduction', className = "nav-item mt-1"),
             dcc.Tab(label="2D Visualisations", value='tab-outer-2d', className = "nav-item mt-1"),
-            dcc.Tab(label="3D Visualisations", value='tab-outer-3d', className = "nav-item mt-1"),
-
-
+            # dcc.Tab(label="3D Visualisations", value='tab-outer-3d', className = "nav-item mt-1"),
             dcc.Tab(label="About", value='tab-outer-about', className = "nav-item mt-1")
         ],
         className = "nav nav-tabs mb-3"
     ),
-    html.Div(
-        id='tabs-outer-content',
-        style = {
-            "height" : "100%"
-        },
-        className = "mb-3"
-    )
+    dcc.Location(id = 'location'),
+
+    dash.page_container
     ],
     fluid=False, # True removes margins from either side of the container
     style = {
@@ -92,17 +87,20 @@ app.layout = dbc.Container([
     }
     )
 
-@app.callback(Output('tabs-outer-content', 'children'),
+@app.callback(Output('location', 'href'),
               Input('tabs-outer', 'value'))
 def render_outer_content(tab):
+    # dash.page_container
     if tab == 'tab-outer-introduction':
-        return contentIntro()
+        return '/'
+        # return contentIntro()
     elif tab == 'tab-outer-2d':
-        return layout2dVisualisation()
-    elif tab == 'tab-outer-3d':
-        return layout3dVisualisation()
+        return '/2d'
+    # elif tab == 'tab-outer-3d':
+    #     return layout3dVisualisation()
     elif tab == 'tab-outer-about':
-        return contentAbout()
+        return '/about'
+        # return contentAbout()
     
 
 

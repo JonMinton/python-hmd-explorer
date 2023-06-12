@@ -1,8 +1,10 @@
+import dash
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
-def contentAbout():
-    return html.Div(
+dash.register_page(__name__)
+
+layout = html.Div(
         [
             dbc.Card(
                 [
