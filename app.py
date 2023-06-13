@@ -70,7 +70,7 @@ app.layout = dbc.Container([
         children=[
             dcc.Tab(label="Introduction", value='tab-outer-introduction', className = "nav-item mt-1"),
             dcc.Tab(label="2D Visualisations", value='tab-outer-2d', className = "nav-item mt-1"),
-            # dcc.Tab(label="3D Visualisations", value='tab-outer-3d', className = "nav-item mt-1"),
+            dcc.Tab(label="3D Visualisations", value='tab-outer-3d', className = "nav-item mt-1"),
             dcc.Tab(label="About", value='tab-outer-about', className = "nav-item mt-1")
         ],
         className = "nav nav-tabs mb-3"
@@ -96,8 +96,9 @@ def render_outer_content(tab):
         # return contentIntro()
     elif tab == 'tab-outer-2d':
         return '/2d'
-    # elif tab == 'tab-outer-3d':
-    #     return layout3dVisualisation()
+    elif tab == 'tab-outer-3d':
+        return '/3d'
+
     elif tab == 'tab-outer-about':
         return '/about'
         # return contentAbout()
