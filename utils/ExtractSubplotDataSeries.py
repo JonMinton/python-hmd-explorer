@@ -107,7 +107,7 @@ def extractSubplotDataSeries(typeValue, placeValue, sexValue, ageValue, yearValu
             (d['cntry'] == placeValue) & 
             (d['year'] - d['age'] == cohortValue) & 
             (d['age'] <= 90),
-            ['age', 'populaton_count']
+            ['age', 'population_count']
         ]
         return dAge, dPeriod, dCohort
     elif typeValue == 'lifetables':

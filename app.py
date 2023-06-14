@@ -65,8 +65,81 @@ app.layout = dbc.Container([
        style = {"margin-bottom": "0.5rem"},
        className = ("g-0")
     ),
+    # dbc.Row(
+    #     dbc.Col(
+    #         children = [
+    #             dbc.Nav(
+    #                 children = dbc.Navbar(
+    #                     children = [
+    #                         dbc.NavItem(
+    #                             children = [
+    #                                 dbc.NavLink(
+    #                                     children = "Introduction",
+    #                                     href = "/",
+    #                                     style = {"color" : "rgba(50, 50, 50, 0.8)"}
+    #                                 )
+    #                             ],
+    #                             # className = "d-flex align-items-center"
+    #                         ),
+    #                         dbc.NavItem(
+    #                             children = [
+    #                                 dbc.NavLink(
+    #                                     children = "2D Visualisations",
+    #                                     href = "/2d",
+    #                                     style = {"color" : "rgba(50, 50, 50, 0.8)"}
+
+    #                                 )
+    #                             ],
+    #                             # className = "d-flex align-items-center"
+    #                         ),
+    #                         dbc.NavItem(
+    #                             children = [
+    #                                 dbc.NavLink(
+    #                                     children = "3D Visualisations",
+    #                                     href = "/3d",
+    #                                     style = {
+    #                                         "color" : "rgba(50, 50, 50, 0.8)",
+    #                                         "cursor" : "pointer"
+    #                                         }
+
+    #                                 )
+    #                             ],
+    #                             # className = "d-flex align-items-center"
+    #                         ),
+    #                         dbc.NavItem(
+    #                             children = [
+    #                                 dbc.NavLink(
+    #                                     children = "About",
+    #                                     href = "/about",
+    #                                     style = {"color" : "rgba(50, 50, 50, 0.8)"}
+
+    #                                 )
+    #                             ],
+    #                             # className = "d-flex align-items-center"
+    #                         ),
+
+    #                     ],
+    #                     style = {
+    #                         "justify-items" : "space-around",
+    #                         "padding" : "20px",
+    #                         "color" : "black"
+    #                     }
+                    
+    #                 ),
+    #                 # className = "d-flex nav nav-tabs mb-3",
+    #                 style = {
+    #                     # "width" : "100%",
+    #                     # "justify-content" : "space-between"
+    #                 }
+
+    #             )
+    #         ],
+            
+    #         width = 12
+    #     )
+    # ),
     dcc.Tabs(
-        id="tabs-outer", value='tabs-outer-value', 
+        id="tabs-outer", value='tabs-outer-introduction', 
         children=[
             dcc.Tab(label="Introduction", value='tab-outer-introduction', className = "nav-item mt-1"),
             dcc.Tab(label="2D Visualisations", value='tab-outer-2d', className = "nav-item mt-1"),

@@ -423,13 +423,24 @@ def makeColumnSubplots(clickData, typeValue, placeValue, sexValue, styleValue, z
         subfigs = makeApcSubplots('col', dAge, dPeriod, dCohort, logZ)
         apcLabel = f"APC for age {ageValue}, year {yearValue}, cohort {yearValue - ageValue}"
         
-        return dcc.Graph(
-            figure = subfigs,
-            style = {
-                "height" : "100%",
-                "width" : "100%"
-            }
+        return html.Div(
+            children = [
+                html.H5(apcLabel,
+                    style = {
+                        "height" : "5vh",
+                        "width" : "100%"
+                    }    
+                        ),
+                dcc.Graph(
+                        figure = subfigs,
+                        style = {
+                            "height" : "65vh",
+                            "width" : "100%"
+                        }
+                    )
+            ]
         )
+    
 
 
 @callback(
