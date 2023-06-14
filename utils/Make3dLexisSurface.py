@@ -43,7 +43,7 @@ def make3dLexisSurface(lsType, xTitle, yTitle, zTitle, mainTitle, xSeries, ySeri
             # For contour map should swap axes
                 y = xSeries,
                 x = ySeries,
-                z = np.log(zArray) if logZ else zArray,
+                z = np.log(np.transpose(zArray)) if logZ else np.transpose(zArray),
                 colorscale = colorscale
             )]
         )
@@ -67,10 +67,10 @@ def make3dLexisSurface(lsType, xTitle, yTitle, zTitle, mainTitle, xSeries, ySeri
         fig = go.Figure(
             data = 
             [go.Heatmap(
-            # For heatmap should swap axes
+                # swap and transpose 
                 y = xSeries,
                 x = ySeries,
-                z = np.log(zArray) if logZ else zArray,
+                z = np.log(np.transpose(zArray)) if logZ else np.transpose(zArray),
                 colorscale = colorscale
             )]
         )

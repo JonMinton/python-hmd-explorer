@@ -434,7 +434,7 @@ def makeColumnSubplots(clickData, typeValue, placeValue, sexValue, styleValue, z
                 dcc.Graph(
                         figure = subfigs,
                         style = {
-                            "height" : "65vh",
+                            "height" : "70vh",
                             "width" : "100%"
                         }
                     )
