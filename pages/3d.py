@@ -1,14 +1,14 @@
 import dash
 from dash import html, dcc, callback, Input, Output, State
 import dash_bootstrap_components as dbc
-import pandas as pd
-import numpy as np
 import json
 
-import plotly.graph_objects as go
+from plotly.express import colors
 
 from utils.Extract3dDataArrays import extract3dDataArrays
 from utils.Make3dLexisSurface import make3dLexisSurface
+from utils.ExtractSubplotDataSeries import extractSubplotDataSeries
+from utils.MakeApcSubplots import makeApcSubplots
 
 with open('assets/lookups/types_of_data.json', 'r') as f:
     dataTypes = json.load(f)
@@ -25,7 +25,7 @@ def viz3dMainOptions(dataTypes, placesTypes):
                         [
                             dcc.Dropdown(
                                 options = dataTypes,
-                                value = dataTypes[0]['value'],
+                                value = 'Mx',
                                 id = "3d-type-selector",
                                 multi=False
                             ),
@@ -157,12 +157,34 @@ def viz3dMainOptions(dataTypes, placesTypes):
                             ),
                             dbc.Tooltip(
                                 "Click here to open additional options",
-                                target = "3d-open-more-options"
+                                target = "3d-open-more"
                             ),
                             dbc.Offcanvas(
                                 children = [
-                                    dbc.Placeholder(),
-                                    html.P("contents will go here ")
+                                    dbc.Card(
+                                        body = True,
+                                        children = [
+                                            dcc.Checklist(
+                                                options = [
+                                                    {'label': ' Log elevation', 'value' : 'log-z'}
+                                                ],
+                                                value = ['log-z'],
+                                                id = 'fig-3d-z-options'
+                                            ),
+                                            html.H6("Select colourscale",
+                                                    style = {
+                                                        "margin-top" : '1rem'
+                                                    }),
+                                            dcc.Dropdown(
+                                                id = 'fig-3d-z-colorscale',
+                                                options = colors.named_colorscales(),
+                                                value = 'viridis'
+                                            )                              
+                                            ],
+                                        style = {
+                                            "margin" : "1rem"
+                                        }
+                                    ),
                                 ],
                                 title = "Further options",
                                 id = "3d-more-options",
@@ -220,6 +242,17 @@ layout = html.Div(
         }
     )
 
+
+@callback(
+    Output("3d-more-options", "is_open"),
+    Input("3d-open-more", "n_clicks"),
+    State("3d-more-options", "is_open")
+)
+def toggleMoreOptionsOffside(n1, is_open):
+    if n1:
+        return not is_open
+    return is_open
+
 @callback(
     Output("3d-big-main", "children"),
     Input("3d-canvas-setup", "value"),
@@ -252,33 +285,7 @@ def select3dCanvas(canvas_value, lexisStyle_value):
                     }
                 ),
                 dbc.Col(
-                    children = [
-                        dcc.Graph(
-                            figure = {},
-                            id = "subplot-age",
-                            style = {
-                                "height" : "100%",
-                                "width" : "100%"
-                            }
-                        ),
-                        dcc.Graph(
-                            figure = {},
-                            id = "subplot-period",
-                            style = {
-                                "height" : "100%",
-                                "width" : "100%"
-                            }
-                        ),
-                        dcc.Graph(
-                            figure = {},
-                            id = "subplot-cohort",
-                            style = {
-                                "height" : "100%",
-                                "width" : "100%"
-                            }
-                        )
-
-                    ],
+                    id = 'subplot-col-container',
                     width = 4,
                     style = {
                         "display" : "flex",
@@ -301,51 +308,9 @@ def select3dCanvas(canvas_value, lexisStyle_value):
                             }
                         ),
                         dbc.Row(
-                            children = [
-                                dbc.Col(
-                                    children = [
-                                        dcc.Graph(
-                                            figure = {},
-                                            id = "subplot-age",
-                                            style = {
-                                                "height" : "100%",
-                                                "width" : "100%"
-                                            }
-                                        )
-                                    ],
-                                    width = 4
-                                ),
-                                dbc.Col(
-                                    children = [
-                                        dcc.Graph(
-                                            figure = {},
-                                            id = "subplot-period",
-                                            style = {
-                                                "height" : "100%",
-                                                "width" : "100%"
-                                            }
-                                        )
-                                    ],
-                                    width = 4
-                                ),
-                                dbc.Col(
-                                    children = [
-                                        dcc.Graph(
-                                            figure = {},
-                                            id = "subplot-cohort",
-                                            style = {
-                                                "height" : "100%",
-                                                "width" : "100%"
-                                            }
-                                        )
-                                    ],
-                                    width = 4
-                                ),
-
-                            ],
+                            id = 'subplot-row-container',
                             style = {
-                                "margin": "0",
-                                "padding" : "0"
+                                "height" : "25vh"
                             }
                         )                
             ]
@@ -359,20 +324,24 @@ def select3dCanvas(canvas_value, lexisStyle_value):
     State('3d-type-selector', 'value'),
     State('3d-place-selector', 'value'),
     State('3d-sex-selector', 'value'),
-    State('lexis-surface-style', 'value')
+    State('lexis-surface-style', 'value'),
+    State('fig-3d-z-options', 'value'),
+    State('fig-3d-z-colorscale', 'value')
 )
-def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, styleValue):
+def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, styleValue, zValues, colorscaleValue):
     print(f"generating Lexis surface for {typeValue}")
     print(f"placeValue: {placeValue}")
     print(f"sexValue: {sexValue}")
-
+    print(f"colorscaleValue: {colorscaleValue}")
+    logZ = True if 'log-z' in zValues else False
+    print(f"logZ is {logZ}")
     if typeValue == 'births':
         return html.P(
             "Lexis surfaces not implemented for births"
         )
     elif typeValue == 'deaths':
         xRange, yRange, zArray = extract3dDataArrays(typeValue, sexValue, placeValue)
-        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Number of deaths', "Lexis surface of number of deaths", xRange, yRange, zArray, True)
+        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Number of deaths', "Lexis surface of number of deaths", xRange, yRange, zArray, logZ, colorscaleValue)
         return dcc.Graph(
              figure = fig,
              id = 'lexis-surface',
@@ -383,7 +352,7 @@ def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, s
         )
     elif typeValue == 'exposures':
         xRange, yRange, zArray = extract3dDataArrays(typeValue, sexValue, placeValue)
-        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Number of exposures', "Lexis surface of number of exposures", xRange, yRange, zArray, False)
+        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Number of exposures', "Lexis surface of number of exposures", xRange, yRange, zArray, logZ, colorscaleValue)
         return dcc.Graph(
              figure = fig,
              id = 'lexis-surface',
@@ -395,7 +364,7 @@ def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, s
     elif typeValue == 'Mx':
         print("I'm in Mx main")
         xRange, yRange, zArray = extract3dDataArrays(typeValue, sexValue, placeValue)
-        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Mortality Rate', "Mortality Rate Lexis surface", xRange, yRange, zArray, True)
+        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Mortality Rate', "Mortality Rate Lexis surface", xRange, yRange, zArray, logZ, colorscaleValue)
         return dcc.Graph(
              figure = fig,
              id = 'lexis-surface',
@@ -406,7 +375,7 @@ def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, s
         )
     elif typeValue == 'population':
         xRange, yRange, zArray = extract3dDataArrays(typeValue, sexValue, placeValue)
-        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Population Size', "Population Size Lexis surface", xRange, yRange, zArray, False)
+        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Population Size', "Population Size Lexis surface", xRange, yRange, zArray, logZ, colorscaleValue)
         return dcc.Graph(
              figure = fig,
              id = 'lexis-surface',
@@ -417,7 +386,7 @@ def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, s
         )
     elif typeValue == 'lifetables':
         xRange, yRange, zArray = extract3dDataArrays(typeValue, sexValue, placeValue)
-        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Life Expectancy', "Age conditional Life expectancy Lexis Surface", xRange, yRange, zArray, False)
+        fig = make3dLexisSurface(styleValue, 'Age in years', 'Year', 'Life Expectancy', "Age conditional Life expectancy Lexis Surface", xRange, yRange, zArray, logZ, colorscaleValue)
         return dcc.Graph(
              figure = fig,
              id = 'lexis-surface',
@@ -428,5 +397,70 @@ def generateAppropriateLexisSurface(n_clicks, typeValue, placeValue, sexValue, s
         )
     
 
+@callback(
+    Output("subplot-col-container", "children"),
+    Input('lexis-surface', 'clickData'),
+    State('3d-type-selector', 'value'),
+    State('3d-place-selector', 'value'),
+    State('3d-sex-selector', 'value'),
+    State('lexis-surface-style', 'value'),
+    State('fig-3d-z-options', 'value')
+)
+def makeColumnSubplots(clickData, typeValue, placeValue, sexValue, styleValue, zValues):
+    print("In column subplot maker")
+    logZ = True if 'log-z' in zValues else False
+    print(f"logZ is {logZ}")
+    if clickData is not None:
+        print(clickData)
+        ageValue = clickData['points'][0]['x'] if styleValue == '3d' else clickData['points'][0]['y']
+        yearValue = clickData['points'][0]['y'] if styleValue == '3d' else clickData['points'][0]['x']
+        yearValue = round(yearValue, 0)
+        print(f"age is {ageValue} and year is {yearValue}")
 
+        dAge, dPeriod, dCohort = extractSubplotDataSeries(typeValue, placeValue, sexValue, ageValue, yearValue)
+
+
+        subfigs = makeApcSubplots('col', dAge, dPeriod, dCohort, logZ)
+        apcLabel = f"APC for age {ageValue}, year {yearValue}, cohort {yearValue - ageValue}"
+        
+        return dcc.Graph(
+            figure = subfigs,
+            style = {
+                "height" : "100%",
+                "width" : "100%"
+            }
+        )
+
+
+@callback(
+    Output("subplot-row-container", "children"),
+    Input('lexis-surface', 'clickData'),
+    State('3d-type-selector', 'value'),
+    State('3d-place-selector', 'value'),
+    State('3d-sex-selector', 'value'),
+    State('lexis-surface-style', 'value'),
+    State('fig-3d-z-options', 'value')
+)
+def makeRowSubplots(clickData, typeValue, placeValue, sexValue, styleValue, zValues):
+    print("In row subplot maker")
+    logZ = True if 'log-z' in zValues else False
+
+    if clickData is not None:
+        print(clickData)
+        ageValue = clickData['points'][0]['x'] if styleValue == '3d' else clickData['points'][0]['y']
+        yearValue = clickData['points'][0]['y'] if styleValue == '3d' else clickData['points'][0]['x']
+        yearValue = round(yearValue, 0)
+        print(f"age is {ageValue} and year is {yearValue}")
+        # Because the heatmap returns values like 1995.5 this is needed...
+        dAge, dPeriod, dCohort = extractSubplotDataSeries(typeValue, placeValue, sexValue, ageValue, yearValue)
+
+
+        subfigs = makeApcSubplots('row', dAge, dPeriod, dCohort, logZ)
+        return dcc.Graph(
+            figure = subfigs,
+            style = {
+                "height" : "100%",
+                "width" : "100%"
+            }
+        )
 

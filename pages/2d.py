@@ -1,7 +1,7 @@
 
 import dash
 from dash import html, dcc, callback, Input, Output, State
-import  dash_bootstrap_components as dbc
+import dash_bootstrap_components as dbc
 
 
 import json
@@ -9,16 +9,7 @@ import json
 from utils.Make2dGraph import make2dGraph
 from utils.Extract2dDataSeries import extract2dDataSeries
 
-# from src.layouts.viz_2d_main_options import viz2dMainOptions
 
-# from src.dynamic.viz_2d_display_main import viz2dDisplayMain
-# from src.dynamic.viz_2d_main_graph import viz2dMainGraph
-
-# from src.dynamic.canvas_2d_births import canvas2dBirths
-# from src.dynamic.canvas_2d_deaths import canvas2dDeaths
-# from src.dynamic.canvas_2d_exposures import canvas2dExposures
-# from src.dynamic.canvas_2d_population import canvas2dPopulation
-# from src.dynamic.canvas_2d_lifetables import canvas2dLifetables
 
 with open('assets/lookups/types_of_data.json', 'r') as f:
     dataTypes = json.load(f)
@@ -310,10 +301,11 @@ def toggleMoreOptionsOffside(n1, is_open):
 )
 def showClickonInfo(clickData):
     print("triggered!")
-    print(clickData)
-    print(f"clickData has length {len(clickData['points'])}")
-    print(clickData['points'][0]['x'])
+
     if clickData is not None:
+        print(clickData)
+        print(f"clickData has length {len(clickData['points'])}")
+        print(clickData['points'][0]['x'])
         selectedYear = clickData['points'][0]['x']
         selectedValue = "{:.2f}".format(clickData['points'][0]['y'])
         return f"In {selectedYear} the value was {selectedValue}"

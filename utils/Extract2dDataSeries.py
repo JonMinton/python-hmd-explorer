@@ -81,9 +81,8 @@ def extract2dDataSeries(datatypeSelected, placesSelected, sexSelected):
             , ['country', 'year', 'population_count']
         ]
         
-        # The following is for cases where more than one value is availbale for 
-        # a particular sex and country combination
-        d3 = d2.groupby(['country', 'year']).agg('mean').reset_index()
+        # Have changed from mean to sum. Of course there should be more than one!
+        d3 = d2.groupby(['country', 'year']).agg('sum').reset_index()
         d4 = d3.pivot(index='year', columns='country', values = 'population_count')
         
         yearSeries = d4.index.to_list()
@@ -102,7 +101,7 @@ def extract2dDataSeries(datatypeSelected, placesSelected, sexSelected):
             (d['age'] == 0)
             , ['country', 'year', 'ex']
         ]
-        
+        # Not sure this is needed
         d3 = d2.groupby(['country', 'year']).agg('mean').reset_index()
         
         d4 = d3.pivot(index='year', columns='country', values = 'ex')

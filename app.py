@@ -77,7 +77,8 @@ app.layout = dbc.Container([
     ),
     dcc.Location(id = 'location'),
 
-    dash.page_container
+    dash.page_container,
+
     ],
     fluid=False, # True removes margins from either side of the container
     style = {
@@ -104,6 +105,8 @@ def render_outer_content(tab):
         # return contentAbout()
     
 
-
 if __name__ == '__main__':
     app.run_server(debug=True, host = '127.0.0.1')
+
+
+
