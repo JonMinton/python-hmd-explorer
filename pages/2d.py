@@ -8,7 +8,8 @@ import json
 
 from utils.Make2dGraph import make2dGraph
 from utils.Extract2dDataSeries import extract2dDataSeries
-
+from utils.Derive2dDifferentiatedDataSeries import derive2DDifferentiatedDataSeries
+from utils.Make2dDifferenceGraph import make2dDifferenceGraph
 
 
 with open('assets/lookups/types_of_data.json', 'r') as f:
@@ -131,7 +132,8 @@ def viz2dDisplayMain():
                                 dcc.Checklist(
                                     options = [
                                         {'label': ' Log y axis', 'value' : 'log-y'},
-                                        {'label' : ' Show y from origin', 'value': "y-0"}
+                                        {'label' : ' Show y from origin', 'value': 'y-0'},
+                                        {'label' : ' Show change in value' , 'value' : "delta-y"}
                                     ],
                                     value = [],
                                     id = 'fig-2d-y-options'
@@ -186,21 +188,16 @@ layout = html.Div(
 @callback(
     Output("2d-viz-display-main",  "children"),
     [Input("2d-confirm-selection", "n_clicks"),
-    Input("fig-2d-y-options", "value")],
+    State("fig-2d-y-options", "value")],
     State("2d-type-selector", "value"),
     State("2d-place-selector", "value"),
     State("2d-sex-selector", "value")
-    
 )
 def showSelection(n_clicks, y_option_values, type_value, place_value, sex_value):
-    # print("Show selection called")
-    # print(f"type_value: {type_value}")
-    # print(f"place_value: {place_value}")
-    # print(f"sex_value: {sex_value}")
-    # print(f"y_option_values : {y_option_values}")
 
     logY = "log-y" in y_option_values
     origY = "y-0" in y_option_values
+    deltaY = 'delta-y' in y_option_values
     # If place_value is not a list, turn it into a list 
     if isinstance(place_value, str):
         place_value = [place_value]
@@ -208,7 +205,12 @@ def showSelection(n_clicks, y_option_values, type_value, place_value, sex_value)
     if type_value == "births":
         print(f"place: {place_value}, sex: {sex_value}")
         yearSeries, ySeriesDict = extract2dDataSeries(type_value, place_value, sex_value)
-        fig = make2dGraph("Number of births over time", "year", "number of births", logY, origY, yearSeries, ySeriesDict)
+        if deltaY:
+            print("series should be differentiated")
+            ySeriesDifferentiatedDict = derive2DDifferentiatedDataSeries(ySeriesDict)
+            fig = make2dDifferenceGraph("Change in number of births","Year", "Change from last year", yearSeries, ySeriesDifferentiatedDict)
+        else: 
+            fig = make2dGraph("Number of births over time", "year", "number of births", logY, origY, yearSeries, ySeriesDict)
         return dcc.Graph(
             figure = fig,
             id = 'clickable-2d-plot',
@@ -220,7 +222,13 @@ def showSelection(n_clicks, y_option_values, type_value, place_value, sex_value)
     elif type_value == "deaths": 
         print("deaths type detected")
         yearSeries, ySeriesDict = extract2dDataSeries(type_value, place_value, sex_value)
-        fig = make2dGraph("Number of deaths over time", "year", "number of deaths", logY, origY, yearSeries, ySeriesDict)
+        if deltaY:
+            print("series should be differentiated")
+            ySeriesDifferentiatedDict = derive2DDifferentiatedDataSeries(ySeriesDict)
+            fig = make2dDifferenceGraph("Change in number of deaths","Year", "Change from last year", yearSeries, ySeriesDifferentiatedDict)
+
+        else: 
+            fig = make2dGraph("Number of deaths over time", "year", "number of deaths", logY, origY, yearSeries, ySeriesDict)
         return dcc.Graph(
             figure = fig,
             id = 'clickable-2d-plot',
@@ -233,7 +241,13 @@ def showSelection(n_clicks, y_option_values, type_value, place_value, sex_value)
     elif type_value == 'exposures':
         print('exposures type detected')
         yearSeries, ySeriesDict = extract2dDataSeries(type_value, place_value, sex_value)
-        fig = make2dGraph("Exposures over time", "year", "number of exposures", logY, origY, yearSeries, ySeriesDict)
+        if deltaY:
+            print("series should be differentiated")
+            ySeriesDifferentiatedDict = derive2DDifferentiatedDataSeries(ySeriesDict)
+            fig = make2dDifferenceGraph("Change in number of exposures","Year", "Change from last year", yearSeries, ySeriesDifferentiatedDict)
+
+        else: 
+            fig = make2dGraph("Exposures over time", "year", "number of exposures", logY, origY, yearSeries, ySeriesDict)
         return dcc.Graph(
             figure = fig,
             id = 'clickable-2d-plot',
@@ -245,7 +259,13 @@ def showSelection(n_clicks, y_option_values, type_value, place_value, sex_value)
     elif type_value == 'lifetables':
         print('exposures type detected')
         yearSeries, ySeriesDict = extract2dDataSeries(type_value, place_value, sex_value)
-        fig = make2dGraph("Life expectancy at birth over time", "year", "life expectancy", logY, origY, yearSeries, ySeriesDict)
+        if deltaY:
+            print("series should be differentiated")
+            ySeriesDifferentiatedDict = derive2DDifferentiatedDataSeries(ySeriesDict)
+            fig = make2dDifferenceGraph("Change in life expectancy over time","Year", "Change from last year", yearSeries, ySeriesDifferentiatedDict)
+
+        else: 
+            fig = make2dGraph("Life expectancy at birth over time", "year", "life expectancy", logY, origY, yearSeries, ySeriesDict)
         return dcc.Graph(
             figure = fig,
             id = 'clickable-2d-plot',
@@ -257,7 +277,13 @@ def showSelection(n_clicks, y_option_values, type_value, place_value, sex_value)
     elif type_value == 'population': 
         print("population type detected")
         yearSeries, ySeriesDict = extract2dDataSeries(type_value, place_value, sex_value)
-        fig = make2dGraph("Total population over time", "year", "life expectancy", logY, origY, yearSeries, ySeriesDict)
+        if deltaY:
+            print("series should be differentiated")
+            ySeriesDifferentiatedDict = derive2DDifferentiatedDataSeries(ySeriesDict)
+            fig = make2dDifferenceGraph("Change in population size over time","Year", "Change from last year", yearSeries, ySeriesDifferentiatedDict)
+
+        else: 
+            fig = make2dGraph("Total population over time", "year", "life expectancy", logY, origY, yearSeries, ySeriesDict)
         return dcc.Graph(
             figure = fig,
             id = 'clickable-2d-plot',
